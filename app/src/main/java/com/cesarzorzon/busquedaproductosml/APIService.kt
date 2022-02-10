@@ -2,9 +2,10 @@ package com.cesarzorzon.busquedaproductosml
 
 import retrofit2.Response
 import retrofit2.http.GET
-import retrofit2.http.Url
+import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface APIService {
-    @GET
-    suspend fun getProducts(@Url url:String):Response<ProductosResponse>
+    @GET("/sites/MLA/search")
+    suspend fun getProducts(@Query("q") id: String): Response<ProductosResponse>
 }

@@ -32,26 +32,25 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
         binding.rvProduct.adapter = adapter
     }
 
-    private fun getRetrofit():Retrofit{
+    private fun getRetrofit(): Retrofit {
         return Retrofit.Builder()
-            .baseUrl("https://api.mercadolibre.com/sites/MLA/")
+            .baseUrl("https://api.mercadolibre.com")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }
 
-    private fun buscarProducto(query:String){
+    private fun buscarProducto(query: String) {
         CoroutineScope(Dispatchers.IO).launch {
-            val call = getRetrofit().create(APIService::class.java).getProducts("search?q=$query")
+            val call = getRetrofit().create(APIService::class.java).getProducts(query)
+            this.coroutineContext
             val productos = call.body()
 
-            runOnUiThread{
-                if (call.isSuccessful){
-
-                    val images= productos?.resulted?.images?: emptyList()
+            runOnUiThread {
+                if (call.isSuccessful) {
                     prodImages.clear()
-                    prodImages.addAll(images)
+                    productos?.resulted?.forEach { (images) -> prodImages.add(images) }
                     adapter.notifyDataSetChanged()
-                }else{
+                } else {
                     showError()
                 }
             }
@@ -63,7 +62,7 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
     }
 
     override fun onQueryTextSubmit(query: String?): Boolean {
-        if(!query.isNullOrEmpty()){
+        if (!query.isNullOrEmpty()) {
             buscarProducto(query.lowercase())
         }
         return true

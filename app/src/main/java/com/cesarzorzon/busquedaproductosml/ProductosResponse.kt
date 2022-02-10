@@ -5,10 +5,11 @@ import com.google.gson.annotations.SerializedName
 
 data class ProductosResponse(
     @SerializedName("results")
-    var resulted: Result
+    var resulted: List<Result>
     )
+
     data class Result (
         @SerializedName("thumbnail")
-        var images: List<String>
+        var images: String
         )
 
